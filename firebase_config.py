@@ -18,23 +18,31 @@ def get_db():
 
     if not firebase_admin._apps:
 
+        # Vercel Cloud Configuration
         firebase_json = os.getenv(
             "FIREBASE_SERVICE_ACCOUNT", ""
         ).strip()
 
         if firebase_json:
 
-            service_account = json.loads(firebase_json)
+            try:
+                service_account = json.loads(firebase_json)
 
-            cred = credentials.Certificate(
-                service_account
-            )
+                cred = credentials.Certificate(
+                    service_account
+                )
+
+            except Exception as e:
+                raise RuntimeError(
+                    "Invalid Firebase service account configuration."
+                ) from e
 
         else:
 
+            # Local PyCharm Configuration
             filename = os.getenv(
                 "GOOGLE_APPLICATION_CREDENTIALS",
-                "ServiceAccountKey.json"
+                "Stockflow.json"
             ).strip()
 
             key_path = Path(filename)
@@ -43,13 +51,6 @@ def get_db():
                 key_path = BASE_DIR / key_path
 
             if not key_path.is_file():
-                matches = [f for f in key_path.parent.glob("*.json")
-                           if f.name.casefold() == key_path.name.casefold()]
-                if len(matches) == 1:
-                    key_path = matches[0]
-
-            if not key_path.is_file():
-
                 raise FileNotFoundError(
                     f"Firebase key not found: {key_path}"
                 )
