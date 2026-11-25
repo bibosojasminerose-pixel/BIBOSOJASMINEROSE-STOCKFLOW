@@ -1,5 +1,6 @@
 import os
 import json
+import base64
 from pathlib import Path
 from functools import lru_cache
 
@@ -7,9 +8,7 @@ import firebase_admin
 from firebase_admin import credentials, firestore
 from dotenv import load_dotenv
 
-
 BASE_DIR = Path(__file__).resolve().parent
-
 load_dotenv(BASE_DIR / ".env")
 
 
@@ -18,46 +17,36 @@ def get_db():
 
     if not firebase_admin._apps:
 
-        # Vercel Cloud Configuration
-        firebase_json = os.getenv(
-            "FIREBASE_SERVICE_ACCOUNT", ""
+        encoded = os.getenv(
+            "FIREBASE_SERVICE_ACCOUNT_BASE64", ""
         ).strip()
 
-        if firebase_json:
+        if encoded:
+            data = base64.b64decode(
+                encoded, validate=True
+            ).decode("utf-8-sig")
 
-            try:
-                service_account = json.loads(firebase_json)
-
-                cred = credentials.Certificate(
-                    service_account
-                )
-
-            except Exception as e:
-                raise RuntimeError(
-                    "Invalid Firebase service account configuration."
-                ) from e
+            cred = credentials.Certificate(
+                json.loads(data)
+            )
 
         else:
-
-            # Local PyCharm Configuration
             filename = os.getenv(
                 "GOOGLE_APPLICATION_CREDENTIALS",
                 "Stockflow.json"
-            ).strip()
+            )
 
-            key_path = Path(filename)
+            path = Path(filename)
 
-            if not key_path.is_absolute():
-                key_path = BASE_DIR / key_path
+            if not path.is_absolute():
+                path = BASE_DIR / path
 
-            if not key_path.is_file():
+            if not path.is_file():
                 raise FileNotFoundError(
-                    f"Firebase key not found: {key_path}"
+                    "Firebase credentials not found."
                 )
 
-            cred = credentials.Certificate(
-                str(key_path)
-            )
+            cred = credentials.Certificate(str(path))
 
         firebase_admin.initialize_app(cred)
 
