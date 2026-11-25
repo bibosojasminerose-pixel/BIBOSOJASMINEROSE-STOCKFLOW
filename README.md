@@ -1,11 +1,28 @@
-
 # StockFlow – Rosé Vanity
 
 ## Beauty Inventory Management System
 
+**Timeless Beauty. Effortless Elegance.**
+
 StockFlow – Rosé Vanity is a web-based Beauty Inventory Management System developed using Python Flask and Firebase Cloud Firestore. It provides a centralized platform for managing beauty products, organizing categories, monitoring stock movements, and generating inventory reports.
 
 The system features an elegant, responsive interface with burgundy, rose wine, champagne, black plum, and ivory colors.
+
+---
+
+## Live Website
+
+Access the StockFlow – Rosé Vanity website through the following link:
+
+**Website URL:**  
+https://stockflow2026-nine.vercel.app/
+
+**Firebase Connection Health Check:**  
+https://stockflow2026-nine.vercel.app/api/health
+
+The application is hosted on Vercel, allowing users to access the website through an internet-connected device, subject to deployment availability.
+
+---
 
 ## System Objectives
 
@@ -16,10 +33,13 @@ The system features an elegant, responsive interface with burgundy, rose wine, c
 - Maintain accurate inventory transaction records.
 - Generate inventory reports efficiently.
 - Store and retrieve data using Firebase Cloud Firestore.
+- Provide a responsive and user-friendly inventory management platform.
+
+---
 
 ## System Features
 
-### Dashboard
+### 1. Dashboard
 
 - Total products
 - Total categories
@@ -31,7 +51,7 @@ The system features an elegant, responsive interface with burgundy, rose wine, c
 - Product category distribution
 - Stock-level monitoring
 
-### Product Management
+### 2. Product Management
 
 - Add new products
 - View product details
@@ -43,16 +63,16 @@ The system features an elegant, responsive interface with burgundy, rose wine, c
 - Product card and table views
 - Automatic stock-level indicators
 
-### Category Management
+### 3. Category Management
 
 - Add product categories
 - View category details
-- Update categories
+- Update existing categories
 - Delete unused categories
 - Search categories
 - Display associated product counts
 
-### Stock In
+### 4. Stock In
 
 - Record incoming inventory
 - Select existing products
@@ -61,7 +81,7 @@ The system features an elegant, responsive interface with burgundy, rose wine, c
 - Record transaction remarks
 - Maintain stock movement history
 
-### Stock Out
+### 5. Stock Out
 
 - Record outgoing inventory
 - Automatically decrease product stock
@@ -69,16 +89,16 @@ The system features an elegant, responsive interface with burgundy, rose wine, c
 - Prevent insufficient stock transactions
 - Maintain outgoing transaction records
 
-### Transaction History
+### 6. Transaction History
 
 - View all inventory movements
 - Filter Stock In and Stock Out records
 - Search transaction records
 - Display previous and updated stock quantities
 - Display transaction dates and remarks
-- Preserve transaction history as immutable audit records
+- Preserve transaction history as audit records
 
-### Reports
+### 7. Reports
 
 - Inventory summary
 - Product stock reports
@@ -86,7 +106,7 @@ The system features an elegant, responsive interface with burgundy, rose wine, c
 - Low-stock monitoring
 - CSV report export
 
-### User Interface
+### 8. User Interface
 
 - Responsive website layout
 - Collapsible sidebar navigation
@@ -103,6 +123,8 @@ The system features an elegant, responsive interface with burgundy, rose wine, c
 - Pagination
 - Firestore connection indicator
 - Automatic connection checking
+
+---
 
 ## Technologies Used
 
@@ -122,51 +144,61 @@ The system features an elegant, responsive interface with burgundy, rose wine, c
 | GitHub | Source code repository |
 | Vercel | Cloud deployment platform |
 
+---
+
 ## Database Structure
 
 The system uses three interconnected Firebase Cloud Firestore collections.
 
 ### 1. Products Collection
 
-Collection name: `products`
+Collection Name: `products`
 
-| Field | Data Type |
-|-------|-----------|
-| name | String |
-| sku | String |
-| category_id | String |
-| quantity | Integer |
-| price | Number |
-| reorder_level | Integer |
-| description | String |
-| created_at | Date/Time |
-| updated_at | Date/Time |
+This collection stores beauty product information and inventory details.
+
+| Field | Data Type | Description |
+|-------|-----------|-------------|
+| name | String | Product name |
+| sku | String | Unique product identifier |
+| category_id | String | Reference to product category |
+| quantity | Integer | Available stock quantity |
+| price | Number | Product unit price |
+| reorder_level | Integer | Minimum stock threshold |
+| description | String | Product description |
+| created_at | Date/Time | Record creation date |
+| updated_at | Date/Time | Last modification date |
 
 ### 2. Categories Collection
 
-Collection name: `categories`
+Collection Name: `categories`
 
-| Field | Data Type |
-|-------|-----------|
-| name | String |
-| description | String |
-| created_at | Date/Time |
-| updated_at | Date/Time |
+This collection stores product classifications.
+
+| Field | Data Type | Description |
+|-------|-----------|-------------|
+| name | String | Category name |
+| description | String | Category description |
+| created_at | Date/Time | Record creation date |
+| updated_at | Date/Time | Last modification date |
 
 ### 3. Stock Transactions Collection
 
-Collection name: `stock_transactions`
+Collection Name: `stock_transactions`
 
-| Field | Data Type |
-|-------|-----------|
-| product_id | String |
-| product_name | String |
-| type | String |
-| quantity | Integer |
-| previous_quantity | Integer |
-| new_quantity | Integer |
-| remarks | String |
-| created_at | Date/Time |
+This collection stores incoming and outgoing inventory records.
+
+| Field | Data Type | Description |
+|-------|-----------|-------------|
+| product_id | String | Reference to product |
+| product_name | String | Product name |
+| type | String | Stock In or Stock Out |
+| quantity | Integer | Transaction quantity |
+| previous_quantity | Integer | Stock before transaction |
+| new_quantity | Integer | Stock after transaction |
+| remarks | String | Transaction remarks |
+| created_at | Date/Time | Transaction date |
+
+---
 
 ## Database Relationships
 
@@ -174,7 +206,61 @@ Collection name: `stock_transactions`
 - Each product belongs to a category.
 - One product can have multiple stock transactions.
 - Each stock transaction references an existing product.
-- Categories and products with linked records cannot be deleted when doing so would compromise data integrity.
+- Linked-record deletion protection maintains database integrity.
+
+### Relationship Diagram
+
+```mermaid
+erDiagram
+    CATEGORIES ||--o{ PRODUCTS : contains
+    PRODUCTS ||--o{ STOCK_TRANSACTIONS : records
+
+    CATEGORIES {
+        string name
+        string description
+        datetime created_at
+        datetime updated_at
+    }
+
+    PRODUCTS {
+        string name
+        string sku
+        string category_id
+        int quantity
+        float price
+        int reorder_level
+        string description
+        datetime created_at
+        datetime updated_at
+    }
+
+    STOCK_TRANSACTIONS {
+        string product_id
+        string product_name
+        string type
+        int quantity
+        int previous_quantity
+        int new_quantity
+        string remarks
+        datetime created_at
+    }
+```
+
+---
+
+## CRUD Operations
+
+| Module | Create | Read | Update | Delete |
+|--------|--------|------|--------|--------|
+| Products | Yes | Yes | Yes | Yes |
+| Categories | Yes | Yes | Yes | Yes |
+| Stock Transactions | Yes | Yes | No | No |
+
+Stock transactions are intentionally preserved as immutable audit records to maintain accurate inventory history.
+
+Products and categories with linked records are protected against deletion when necessary to maintain database integrity.
+
+---
 
 ## Project Structure
 
@@ -210,6 +296,8 @@ StockFlow/
 
 Note: The `.env` and `Stockflow.json` files are private local configuration files and must not be uploaded to GitHub.
 
+---
+
 ## System Requirements
 
 - Python 3.10 or newer
@@ -220,15 +308,19 @@ Note: The `.env` and `Stockflow.json` files are private local configuration file
 - Internet connection
 - Modern web browser
 
+---
+
 ## Installation and Setup
 
-### Step 1: Clone the Repository
+### Step 1: Download the Project
 
 Clone or download the StockFlow repository from GitHub.
 
 Open the project folder using PyCharm.
 
 ### Step 2: Create a Virtual Environment
+
+Open the PyCharm terminal and execute:
 
 ```powershell
 python -m venv .venv
@@ -257,7 +349,7 @@ python -m pip install -r requirements.txt
 7. Rename the downloaded file to `Stockflow.json`.
 8. Place the file inside the StockFlow project folder.
 
-Never share or publicly upload the Firebase private key.
+Never publicly upload or share the Firebase service account private key.
 
 ### Step 5: Configure Environment Variables
 
@@ -271,29 +363,31 @@ PORT=5008
 
 ### Step 6: Test Firebase Connection
 
-Run the connection checker if included in the project:
+Run the Firebase connection checker:
 
 ```powershell
 python check_firebase.py
 ```
 
-The application also provides a health-check API endpoint for verifying the Firebase connection.
-
 ### Step 7: Insert Sample Data
 
-This step is optional.
+The project includes an optional seed script for inserting sample inventory records into Firebase Cloud Firestore.
 
 ```powershell
 python seed_data.py
 ```
 
-The seed script can populate the database with:
+The sample data may include:
 
-- Up to 20 beauty product categories
-- Up to 100 sample beauty products
-- Up to 50 stock transactions
+- Beauty product categories
+- Sample beauty products
+- Stock In transactions
+- Stock Out transactions
+- Product descriptions
+- Product prices
+- Inventory quantities
 
-Existing records are preserved by the supplied seed script.
+Check existing database records before running the seed script to avoid unwanted duplicate data.
 
 ### Step 8: Run the Application
 
@@ -301,21 +395,43 @@ Existing records are preserved by the supplied seed script.
 python app.py
 ```
 
-## Website URL
+Open the local development website:
 
-Open the StockFlow website using the following link:
+http://127.0.0.1:5008/
 
-[StockFlow – Rosé Vanity](http://127.0.0.1:5008/)
+The local development URL is only accessible from the computer running the Flask application by default.
 
-This is a local development URL and is only accessible from the computer running the Flask application.
+---
+
+## Website Access
+
+### Online Website
+
+The primary website URL for StockFlow – Rosé Vanity is:
+
+[Open StockFlow – Rosé Vanity](https://stockflow2026-nine.vercel.app/)
+
+### Local Development Website
+
+[Open Local StockFlow Website](http://127.0.0.1:5008/)
+
+The online website is hosted through Vercel. The local website is intended for development and testing purposes.
+
+---
 
 ## Firebase Connection Status
 
-To verify the Firebase connection, open:
+The application provides a health-check API endpoint for verifying the Firebase Cloud Firestore connection.
 
-[Firebase Health Check](http://127.0.0.1:5008/api/health)
+### Online Health Check
 
-Successful response:
+https://stockflow2026-nine.vercel.app/api/health
+
+### Local Health Check
+
+http://127.0.0.1:5008/api/health
+
+Example successful response:
 
 ```json
 {
@@ -324,7 +440,9 @@ Successful response:
 }
 ```
 
-The website checks the Firestore connection independently of inventory loading and updates the connection indicator when the server responds.
+The website checks the Firestore connection and updates the connection indicator based on the server response.
+
+---
 
 ## API Endpoints
 
@@ -334,18 +452,20 @@ The website checks the Firestore connection independently of inventory loading a
 | GET | /api/summary | Retrieve dashboard statistics |
 | GET | /api/products | Retrieve all products |
 | POST | /api/products | Create a product |
-| GET | /api/products/<id> | View a product |
-| PUT | /api/products/<id> | Update a product |
-| DELETE | /api/products/<id> | Delete an eligible product |
+| GET | /api/products/{id} | View a product |
+| PUT | /api/products/{id} | Update a product |
+| DELETE | /api/products/{id} | Delete an eligible product |
 | GET | /api/categories | Retrieve all categories |
 | POST | /api/categories | Create a category |
-| GET | /api/categories/<id> | View a category |
-| PUT | /api/categories/<id> | Update a category |
-| DELETE | /api/categories/<id> | Delete an unused category |
+| GET | /api/categories/{id} | View a category |
+| PUT | /api/categories/{id} | Update a category |
+| DELETE | /api/categories/{id} | Delete an unused category |
 | GET | /api/stock_transactions | Retrieve stock transactions |
 | GET | /api/stock-transactions | Retrieve stock transactions |
-| GET | /api/stock_transactions/<id> | View transaction details |
+| GET | /api/stock_transactions/{id} | View transaction details |
 | POST | /api/stock-transactions | Record stock movement |
+
+---
 
 ## Data Validation
 
@@ -361,14 +481,20 @@ The system includes validation mechanisms to maintain accurate and consistent in
 - Positive stock movement quantities
 - Insufficient stock prevention
 - Linked-record deletion protection
-- Delete confirmation
+- Delete confirmation dialogs
 - Error handling
 
-Stock transactions are preserved as audit records and cannot be edited or deleted through the application.
+Stock transactions cannot be edited or deleted through the application because they serve as inventory audit records.
+
+---
 
 ## Website Design
 
 StockFlow – Rosé Vanity features an elegant beauty-inspired interface designed to provide a professional and user-friendly inventory management experience.
+
+### Design Theme
+
+Rosé Vanity – Luxury Beauty Inventory
 
 ### Color Palette
 
@@ -380,35 +506,69 @@ StockFlow – Rosé Vanity features an elegant beauty-inspired interface designe
 | Champagne | #DFBF96 |
 | Ivory | #F4EBE6 |
 
-The interface incorporates decorative beauty photography, a custom RV monogram, professional icons, smooth animations, responsive layouts, and interactive dashboard components.
+### Design Elements
+
+- Elegant beauty photography
+- Custom RV monogram
+- Professional navigation sidebar
+- Interactive dashboard cards
+- Gradient buttons
+- Colorful CRUD buttons
+- Smooth hover animations
+- Responsive layouts
+- Dark and light mode
+- Modern typography
+- Interactive charts
+- Animated statistics
+- User-friendly modal forms
 
 External photographs, fonts, icons, and chart libraries may require an internet connection.
 
 Decorative product photographs are illustrative and do not necessarily represent actual inventory items.
 
+---
+
 ## Vercel Deployment
 
-The project can be configured for deployment using Vercel.
+StockFlow – Rosé Vanity is configured for cloud deployment using Vercel.
+
+### Deployment Information
+
+| Information | Details |
+|-------------|---------|
+| Project Name | StockFlow2026 |
+| Hosting Platform | Vercel |
+| Backend | Python Flask |
+| Database | Firebase Cloud Firestore |
+| Website URL | https://stockflow2026-nine.vercel.app/ |
+| Repository Platform | GitHub |
+
+### Deployment Procedure
 
 1. Upload the project source code to GitHub.
 2. Sign in to Vercel.
 3. Select Add New Project.
 4. Import the StockFlow GitHub repository.
-5. Open Environment Variables.
+5. Open the Environment Variables section.
 6. Add the following environment variable:
 
 ```env
 FIREBASE_SERVICE_ACCOUNT
 ```
 
-7. Set its value to the complete contents of a newly generated Firebase service account JSON file.
-8. Deploy or redeploy the application.
-9. Open the generated Vercel website URL.
-10. Test the deployed `/api/health` endpoint.
+7. Set its value to the complete contents of a valid Firebase service account JSON file.
+8. Save the environment variable.
+9. Deploy or redeploy the application.
+10. Open the generated Vercel website URL.
+11. Test the Firebase health-check endpoint.
 
-The Firebase configuration must support reading credentials from the environment variable.
+The Firebase configuration must support reading service account credentials from the environment variable.
 
-Successful Vercel deployment must be verified separately.
+### Live Application
+
+https://stockflow2026-nine.vercel.app/
+
+---
 
 ## Security and Privacy
 
@@ -418,10 +578,15 @@ The following files must not be uploaded to GitHub:
 - `Stockflow.json`
 - Firebase service account private keys
 - Virtual environment files
+- Python cache files
 
-Firebase credentials must be stored securely.
+Firebase credentials must be stored securely using local environment configuration or Vercel environment variables.
 
-The application currently does not include user authentication or role-based access control. It is intended for academic demonstrations and controlled environments. Public deployment should be protected by appropriate access controls.
+The current application is intended for academic demonstrations and controlled environments.
+
+The system does not currently include user authentication or role-based access control. Public deployment should be protected with appropriate access controls before storing confidential or production inventory data.
+
+---
 
 ## Troubleshooting
 
@@ -430,35 +595,47 @@ The application currently does not include user authentication or role-based acc
 - Verify the Firebase service account filename.
 - Check the `.env` configuration.
 - Confirm that Cloud Firestore is enabled.
-- Check your internet connection.
+- Check the internet connection.
+- Verify Firebase permissions.
 - Restart the Flask application.
 - Test the `/api/health` endpoint.
+
+### Internal Server Error on Vercel
+
+- Check the Vercel deployment logs.
+- Verify the Firebase environment variable.
+- Confirm that all required dependencies are included.
+- Check the Firebase configuration file.
+- Redeploy the application after making changes.
 
 ### Website Remains on Connecting
 
 - Verify that `/api/health` returns a successful response.
 - Check the browser console for JavaScript errors.
 - Confirm that `static/js/app.js` is loaded.
-- Press Ctrl + Shift + R to clear cached website resources.
+- Press Ctrl + Shift + R to refresh cached resources.
 
 ### Unable to Load Records
 
-- Check the Flask terminal for error messages.
+- Check the Flask terminal or Vercel runtime logs.
 - Verify the Firestore collection names.
-- Confirm that the Firebase credentials have database access.
+- Confirm that Firebase credentials have database access.
 - Check the API endpoints individually.
 
 ### Port Already in Use
 
-StockFlow uses port 5008 by default.
+StockFlow uses port 5008 for local development.
 
 Stop any existing application using the same port before restarting Flask.
+
+---
 
 ## Future Enhancements
 
 - User authentication
 - Role-based access control
 - Barcode scanning
+- QR code product identification
 - Supplier management
 - Purchase order management
 - Product expiration monitoring
@@ -466,25 +643,48 @@ Stop any existing application using the same port before restarting Flask.
 - PDF report generation
 - Sales monitoring
 - Advanced inventory analytics
-
-## Academic Purpose
-
-This project was developed as a practical activity for Advanced Database Management, demonstrating the implementation of a cloud-based NoSQL database using Firebase Cloud Firestore, Python Flask, interconnected collections, CRUD operations, data validation, and responsive web development.
-
-## Project Information
-
-- Project Name: StockFlow – Rosé Vanity
-- System Type: Beauty Inventory Management System
-- Database: Firebase Cloud Firestore
-- Backend: Python Flask
-- Frontend: HTML, CSS, and JavaScript
-- Development Environment: PyCharm
-- Academic Year: 2026–2027
+- Inventory forecasting
 
 ---
 
-**StockFlow – Rosé Vanity**
+## Academic Purpose
 
-*Timeless beauty. Effortless elegance.*
+This project was developed as a Final Practical Activity for Advanced Database Management.
+
+It demonstrates the implementation of a cloud-based NoSQL database using Firebase Cloud Firestore, Python Flask, interconnected collections, CRUD operations, data validation, inventory management, responsive web development, and cloud deployment.
+
+The project applies database management concepts through a practical beauty inventory management system.
+
+---
+
+## Project Information
+
+| Information | Details |
+|-------------|---------|
+| Project Name | StockFlow – Rosé Vanity |
+| System Type | Beauty Inventory Management System |
+| Subject | Advanced Database Management |
+| Database | Firebase Cloud Firestore |
+| Backend | Python Flask |
+| Frontend | HTML, CSS, and JavaScript |
+| Development Environment | PyCharm |
+| Hosting Platform | Vercel |
+| Version Control | GitHub |
+| Academic Year | 2026–2027 |
+| Website | https://stockflow2026-nine.vercel.app/ |
+
+---
+
+# StockFlow – Rosé Vanity
+
+### Timeless Beauty. Effortless Elegance.
+
+A centralized, modern, and cloud-based beauty inventory management system.
+
+**Visit Our Website:**
+
+https://stockflow2026-nine.vercel.app/
 
 Developed for educational and academic purposes.
+
+© 2026 StockFlow – Rosé Vanity.
