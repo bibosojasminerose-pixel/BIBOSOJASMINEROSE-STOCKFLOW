@@ -214,12 +214,19 @@ Execute:
 py app.py
 ```
 
-### Step 8: Access the System
+## Access the System
 
-Open the following URL in your web browser:
+Run the Flask application:
 
-http://127.0.0.1:5000/
+py app.py
 
+Open the StockFlow website:
+
+[StockFlow Website](http://127.0.0.1:5000/)
+
+## Check Firebase Connection
+
+[Firestore Connection Test](http://127.0.0.1:5000/api/health)
 ### Step 9: Verify Firestore Connection
 
 Open:
