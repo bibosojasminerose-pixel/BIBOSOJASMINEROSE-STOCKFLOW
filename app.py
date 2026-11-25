@@ -1034,18 +1034,13 @@ def create_transaction():
 
         )
 
-
 # =====================================================
-# RUN FLASK APPLICATION
+# RUN FLASK APPLICATION - STOCKFLOW
 # =====================================================
 
 if __name__ == "__main__":
-
     app.run(
-
-        debug=os.getenv(
-            "FLASK_DEBUG",
-            "false"
-        ).lower() == "true"
-
+        host="127.0.0.1",
+        port=int(os.getenv("PORT", "5008")),
+        debug=os.getenv("FLASK_DEBUG", "false").lower() == "true"
     )
