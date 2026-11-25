@@ -410,6 +410,8 @@ def summary():
 
 @app.get("/api/<collection>")
 def get_all(collection):
+    if collection == "stock-transactions":
+        collection = "stock_transactions"
 
     if collection not in COLLECTIONS:
 
@@ -464,7 +466,7 @@ def get_all(collection):
         records.sort(
 
             key=lambda record:
-                record.get("created_at", ""),
+                str(record.get("created_at") or ""),
 
             reverse=True
 
@@ -822,6 +824,7 @@ def delete(collection, doc_id):
 # ATOMIC FIRESTORE TRANSACTION
 # =====================================================
 
+@app.post("/api/stock_transactions")
 @app.post("/api/stock-transactions")
 def create_transaction():
 

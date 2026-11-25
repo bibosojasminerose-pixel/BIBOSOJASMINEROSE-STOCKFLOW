@@ -1,8 +1,6 @@
 .env
 .venv/
-venv/
 __pycache__/
-*.pyc
-firebase-service-account.json
+Stockflow.json
+*ServiceAccount*.json
 *serviceAccount*.json
-.idea/
