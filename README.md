@@ -2,96 +2,88 @@
 
 ## Project Description
 
-StockFlow is a web-based Inventory Management System developed
-using Python Flask and Firebase Cloud Firestore. It is designed
-to help users efficiently manage products, categories, inventory
-levels, and stock transactions through a centralized platform.
+StockFlow is a web-based Inventory Management System developed using Python Flask and Firebase Cloud Firestore. It provides a centralized platform for managing products, categories, inventory levels, and stock transactions.
 
-The system provides a user-friendly dashboard, real-time database
-operations, inventory monitoring, and organized product records.
+The system simplifies inventory management through an interactive dashboard, organized records, automatic stock calculations, and cloud database integration.
 
-## Project Objectives
+## Website URL
 
-- Centralize product and inventory information.
-- Simplify inventory management operations.
-- Monitor available stock and low-stock products.
-- Record stock-in and stock-out transactions.
-- Reduce manual inventory tracking.
-- Provide efficient and organized database management.
+Open the StockFlow website using the following link:
+
+[StockFlow Website](http://127.0.0.1:5008/)
+
+Note: The Flask application must be running before accessing the website.
 
 ## System Features
 
 - Interactive Dashboard
 - Product Management
 - Category Management
-- Stock-In and Stock-Out Transactions
+- Stock-In and Stock-Out Management
 - Inventory Monitoring
-- Low-Stock Alerts
+- Low-Stock Monitoring
+- Inventory Value Calculation
 - Search and Filter Records
 - View Individual Records
-- Create, Read, Update, and Delete Products and Categories
-- Automatic Stock Quantity Calculation
-- Input Validation
+- Create, Read, Update, and Delete Operations
+- Automatic Stock Quantity Updates
 - Duplicate SKU Prevention
+- Input Validation
+- Responsive Website Design
 - Firebase Cloud Firestore Integration
-- Responsive User Interface
 
 ## Technologies Used
 
-### Frontend
-
-- HTML5
-- CSS3
-- JavaScript
-
-### Backend
-
-- Python
-- Flask
-
-### Database
-
-- Firebase Cloud Firestore
-
-### Development Tools
-
-- PyCharm
-- GitHub
-- Firebase Console
+| Technology | Purpose |
+|------------|---------|
+| Python | Backend Programming |
+| Flask | Web Application Framework |
+| HTML5 | Website Structure |
+| CSS3 | Website Design |
+| JavaScript | Interactive Functionality |
+| Firebase Cloud Firestore | Cloud Database |
+| PyCharm | Development Environment |
+| GitHub | Source Code Repository |
 
 ## Database Collections
 
-The system uses three connected Firestore collections.
+The system consists of three connected Firestore collections.
 
 ### 1. Products
 
-- name
-- sku
-- category_id
-- quantity
-- price
-- reorder_level
-- description
-- created_at
-- updated_at
+| Field | Description |
+|-------|-------------|
+| name | Product name |
+| sku | Unique stock keeping unit |
+| category_id | Reference to product category |
+| quantity | Available stock quantity |
+| price | Product price |
+| reorder_level | Minimum stock level |
+| description | Product description |
+| created_at | Record creation date |
+| updated_at | Record modification date |
 
 ### 2. Categories
 
-- name
-- description
-- created_at
-- updated_at
+| Field | Description |
+|-------|-------------|
+| name | Category name |
+| description | Category description |
+| created_at | Record creation date |
+| updated_at | Record modification date |
 
 ### 3. Stock Transactions
 
-- product_id
-- product_name
-- type
-- quantity
-- previous_quantity
-- new_quantity
-- remarks
-- created_at
+| Field | Description |
+|-------|-------------|
+| product_id | Reference to product |
+| product_name | Product name |
+| type | Stock In or Stock Out |
+| quantity | Transaction quantity |
+| previous_quantity | Previous stock quantity |
+| new_quantity | Updated stock quantity |
+| remarks | Additional transaction details |
+| created_at | Transaction creation date |
 
 ## Database Relationships
 
@@ -99,12 +91,25 @@ The system uses three connected Firestore collections.
 - Each product belongs to an existing category.
 - One product can have multiple stock transactions.
 - Stock transactions automatically update product quantities.
-- Stock transactions are permanent audit records.
-- Linked products and categories are protected from deletion.
+- Products with transaction history are protected from deletion.
+- Categories connected to existing products cannot be deleted.
+
+## CRUD Operations
+
+| Operation | Functionality |
+|-----------|---------------|
+| Create | Add products, categories, and stock transactions |
+| Read | Display, search, and view existing records |
+| Update | Modify product and category information |
+| Delete | Remove eligible products and categories |
+
+Stock transactions are permanent audit records and cannot be edited or deleted.
 
 ## Project Folder Structure
 
+```text
 StockFlow/
+│
 ├── app.py
 ├── firebase_config.py
 ├── seed_data.py
@@ -113,23 +118,24 @@ StockFlow/
 ├── .env.example
 ├── .gitignore
 ├── README.md
-├── ServiceAccountKey.json
+│
 ├── templates/
 │   └── index.html
+│
 └── static/
     ├── css/
     │   └── style.css
     └── js/
         └── app.js
+```
 
 ## Installation and Setup
 
-### Step 1: Clone or Download the Repository
+### Step 1: Download the Project
 
-Download the StockFlow project from GitHub and open the
-project folder using PyCharm.
+Clone or download the GitHub repository and open the StockFlow project folder in PyCharm.
 
-### Step 2: Install Required Dependencies
+### Step 2: Install Dependencies
 
 Open the PyCharm terminal and execute:
 
@@ -139,18 +145,18 @@ py -m pip install -r requirements.txt
 
 ### Step 3: Configure Firebase
 
-1. Open the Firebase Console.
+1. Visit https://console.firebase.google.com/
 2. Create or select a Firebase project.
 3. Enable Cloud Firestore.
 4. Open Project Settings.
 5. Select Service Accounts.
 6. Generate a new private key.
-7. Save the downloaded JSON file as ServiceAccountKey.json.
+7. Rename the downloaded JSON file to ServiceAccountKey.json.
 8. Place the file inside the StockFlow project folder.
 
 ### Step 4: Configure Environment Variables
 
-Create a .env file and add the following configuration:
+Create a `.env` file inside the project folder.
 
 ```env
 GOOGLE_APPLICATION_CREDENTIALS=ServiceAccountKey.json
@@ -158,45 +164,37 @@ FLASK_DEBUG=false
 PORT=5008
 ```
 
-Make sure the credential filename matches the actual JSON file.
+Ensure that the credential filename matches the actual Firebase service account JSON file.
 
-### Step 5: Insert Sample Data (Optional)
+### Step 5: Generate Sample Data (Optional)
 
-To populate empty Firestore collections with sample records,
-execute:
+Execute the following command to populate empty Firestore collections with sample records:
 
 ```powershell
 py seed_data.py
 ```
 
-Do not run the seed script repeatedly on an existing database.
+Only run the seed script when the required collections are empty.
 
 ### Step 6: Run the Application
 
-Execute the following command:
+Execute:
 
 ```powershell
 py app.py
 ```
 
-The Flask application will run using port 5008.
+The application will run at:
 
-## Website URL
-
-Open the StockFlow website using the following link:
-
-[StockFlow Website](http://127.0.0.1:5008/)
-
-Note: This is a local website URL. The Flask application
-must be running on your computer before opening the link.
+http://127.0.0.1:5008/
 
 ## Firebase Connection Test
 
-To verify the Firebase Cloud Firestore connection, open:
+To verify the database connection, open:
 
-[Firestore Connection Test](http://127.0.0.1:5008/api/health)
+[Check Firestore Connection](http://127.0.0.1:5008/api/health)
 
-Expected successful response:
+Expected response:
 
 ```json
 {
@@ -205,56 +203,53 @@ Expected successful response:
 }
 ```
 
-## CRUD Operations
-
-| Operation | Description |
-|-----------|-------------|
-| Create | Add new products and categories |
-| Read | View and search existing records |
-| Update | Modify product and category information |
-| Delete | Remove eligible products and categories |
-
-Stock transactions support creation and viewing but cannot
-be edited or deleted to preserve inventory history.
-
-## Security and Validation
+## Data Validation and Security
 
 - Required field validation
 - Duplicate SKU prevention
-- Product and category relationship validation
+- Valid product category references
 - Negative stock prevention
-- Protected stock transaction history
-- Environment variable configuration
+- Price and quantity validation
+- Protected transaction history
 - Firebase credential protection
+- Environment variable configuration
 
 ## System Limitations
 
 - Requires an internet connection to access Cloud Firestore.
 - Requires valid Firebase credentials.
-- The application runs locally using Flask.
-- The system does not currently include user authentication.
-- Stock transaction records cannot be edited or deleted.
+- The application currently runs on a local Flask server.
+- User authentication is not currently implemented.
+- Stock transaction records cannot be modified or deleted.
+- The local website URL is not publicly accessible.
 
-## Important Security Notice
+## GitHub Security Notice
 
-Do not upload the following files to GitHub:
+The following files must not be uploaded to GitHub:
 
 - ServiceAccountKey.json
 - .env
 - .venv/
 - __pycache__/
 
-Firebase credentials must remain private. Use .env.example
-to provide a sample environment configuration.
+Firebase service account credentials must remain private.
+
+Use `.env.example` to provide the required environment configuration without exposing sensitive information.
 
 ## Academic Purpose
 
-This project was developed as a Final Practical Activity
-for the Advanced Database subject. It demonstrates database
-integration, CRUD operations, data validation, database
-relationships, and web application development using
-Python Flask and Firebase Cloud Firestore.
+This project was developed as a Final Practical Activity for the Advanced Database subject.
+
+It demonstrates the practical application of cloud database management, CRUD operations, database relationships, input validation, inventory management, and web application development using Python Flask and Firebase Cloud Firestore.
+
+## Project Status
+
+Developed for local execution and academic demonstration.
 
 ---
 
-**StockFlow – Smart Inventory. Seamless Management.**
+# StockFlow
+
+**Smart Inventory. Seamless Management.**
+
+Powered by Python Flask and Firebase Cloud Firestore.
