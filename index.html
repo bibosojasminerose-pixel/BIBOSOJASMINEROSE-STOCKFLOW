@@ -1,0 +1,966 @@
+
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#481426">
+
+    <title>Rosé Vanity | StockFlow</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,500&display=swap"
+          rel="stylesheet">
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+    <script defer src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+
+    <script defer src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+
+    <script defer src="{{ url_for('static', filename='js/app.js') }}"></script>
+</head>
+
+<body>
+
+<div class="mobile-overlay" id="mobileOverlay"></div>
+
+
+<!-- ==========================================
+     SIDEBAR
+=========================================== -->
+
+<aside class="sidebar" id="sidebar">
+
+    <div class="brand">
+
+        <svg class="brand-logo"
+             viewBox="0 0 100 100"
+             xmlns="http://www.w3.org/2000/svg">
+
+            <circle cx="50" cy="50" r="46"
+                    fill="none"
+                    stroke="#dfbf96"
+                    stroke-width="1"/>
+
+            <circle cx="50" cy="50" r="41"
+                    fill="none"
+                    stroke="#dfbf96"
+                    stroke-width=".5"/>
+
+            <path d="M50 7 L53 13 L50 19 L47 13Z"
+                  fill="#dfbf96"/>
+
+            <text x="24" y="63"
+                  font-family="Georgia"
+                  font-size="47"
+                  fill="#dfbf96">R</text>
+
+            <text x="48" y="78"
+                  font-family="Georgia"
+                  font-size="36"
+                  fill="#dfbf96">V</text>
+
+            <path d="M27 81 Q50 92 73 81"
+                  stroke="#dfbf96"
+                  fill="none"
+                  stroke-width=".8"/>
+
+        </svg>
+
+        <div class="brand-copy">
+            <h1>Rosé Vanity</h1>
+            <span>STOCKFLOW</span>
+        </div>
+
+    </div>
+
+    <div class="sidebar-divider"></div>
+
+    <p class="nav-label">WORKSPACE</p>
+
+    <nav class="navigation">
+
+        <button class="nav-link active"
+                data-page="dashboard"
+                title="Dashboard">
+
+            <i data-lucide="layout-dashboard"></i>
+            <span>Dashboard</span>
+
+        </button>
+
+        <button class="nav-link"
+                data-page="products"
+                title="Products">
+
+            <i data-lucide="shopping-bag"></i>
+            <span>Products</span>
+
+        </button>
+
+        <button class="nav-link"
+                data-page="categories"
+                title="Categories">
+
+            <i data-lucide="layers"></i>
+            <span>Categories</span>
+
+        </button>
+
+        <p class="nav-label">INVENTORY</p>
+
+        <button class="nav-link"
+                data-page="stock-in"
+                title="Stock In">
+
+            <i data-lucide="package-plus"></i>
+            <span>Stock In</span>
+
+        </button>
+
+        <button class="nav-link"
+                data-page="stock-out"
+                title="Stock Out">
+
+            <i data-lucide="package-minus"></i>
+            <span>Stock Out</span>
+
+        </button>
+
+        <button class="nav-link"
+                data-page="stock_transactions"
+                title="Transactions">
+
+            <i data-lucide="history"></i>
+            <span>Transactions</span>
+
+        </button>
+
+        <button class="nav-link"
+                data-page="reports"
+                title="Reports">
+
+            <i data-lucide="chart-no-axes-combined"></i>
+            <span>Reports</span>
+
+        </button>
+
+    </nav>
+
+
+    <!-- FIRESTORE CONNECTION -->
+
+    <div class="sidebar-bottom">
+
+        <div class="sidebar-divider"></div>
+
+        <div class="connection-status">
+
+            <span class="connection-dot"
+                  id="connectionDot"></span>
+
+            <span id="connectionText">
+                Connecting...
+            </span>
+
+        </div>
+
+    </div>
+
+</aside>
+
+
+<!-- ==========================================
+     MAIN WORKSPACE
+=========================================== -->
+
+<main class="workspace">
+
+    <!-- HEADER -->
+
+    <header class="topbar">
+
+        <div class="header-left">
+
+            <button class="icon-btn"
+                    id="menuBtn"
+                    title="Toggle sidebar"
+                    aria-label="Toggle sidebar">
+
+                <i data-lucide="panel-left"></i>
+
+            </button>
+
+            <div>
+
+                <p class="eyebrow">
+                    INVENTORY MANAGEMENT
+                </p>
+
+                <h2 id="pageTitle">Dashboard</h2>
+
+            </div>
+
+        </div>
+
+        <div class="header-right">
+
+            <div class="date-display">
+
+                <i data-lucide="calendar-days"></i>
+
+                <span id="currentDate"></span>
+
+            </div>
+
+            <button class="icon-btn"
+                    id="refreshBtn"
+                    title="Refresh records"
+                    aria-label="Refresh records">
+
+                <i data-lucide="refresh-cw"></i>
+
+            </button>
+
+            <!-- DARK AND LIGHT MODE -->
+
+            <button class="icon-btn"
+                    id="quickTheme"
+                    title="Change display mode"
+                    aria-label="Change display mode">
+
+                <i data-lucide="moon"></i>
+
+            </button>
+
+            <div class="profile-icon">
+
+                <i data-lucide="user-round"></i>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <!-- ==========================================
+         DASHBOARD
+    =========================================== -->
+
+    <section class="page active" id="dashboardPage">
+
+        <!-- HERO BANNER -->
+
+        <div class="hero">
+
+            <div class="hero-model"></div>
+
+            <div class="hero-decoration decoration-one"></div>
+
+            <div class="hero-decoration decoration-two"></div>
+
+            <div class="hero-content">
+
+                <div class="hero-label">
+
+                    <i data-lucide="sparkles"></i>
+
+                    ROSÉ VANITY
+
+                </div>
+
+                <h1>
+                    Timeless beauty.<br>
+                    <em>Effortless elegance.</em>
+                </h1>
+
+                <p>
+                    Your beauty collections, beautifully organized.
+                    Manage every detail with confidence.
+                </p>
+
+                <button class="btn" data-go="products">
+
+                    Explore Products
+
+                    <i data-lucide="arrow-up-right"></i>
+
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- INVENTORY STATISTICS -->
+
+        <div class="section-heading">
+
+            <div>
+
+                <p class="eyebrow">
+                    BUSINESS OVERVIEW
+                </p>
+
+                <h2>Inventory Overview</h2>
+
+                <p>
+                    Monitor your inventory in one place.
+                </p>
+
+            </div>
+
+            <button class="btn" id="dashboardAdd">
+
+                <i data-lucide="plus"></i>
+
+                Add Product
+
+            </button>
+
+        </div>
+
+        <div class="stats-grid" id="statsGrid">
+
+            <div class="stat-card skeleton"></div>
+
+            <div class="stat-card skeleton"></div>
+
+            <div class="stat-card skeleton"></div>
+
+            <div class="stat-card skeleton"></div>
+
+            <div class="stat-card skeleton"></div>
+
+            <div class="stat-card skeleton"></div>
+
+        </div>
+
+
+        <!-- ==========================================
+             INVENTORY CHARTS
+        =========================================== -->
+
+        <div class="chart-grid">
+
+            <!-- STOCK MOVEMENT -->
+
+            <article class="panel">
+
+                <div class="panel-heading">
+
+                    <div>
+
+                        <p class="eyebrow">
+                            ANALYTICS
+                        </p>
+
+                        <h3>Stock Movement</h3>
+
+                        <p>
+                            Incoming and outgoing inventory.
+                        </p>
+
+                    </div>
+
+                    <div class="panel-icon">
+
+                        <i data-lucide="chart-column"></i>
+
+                    </div>
+
+                </div>
+
+                <div class="chart-container">
+
+                    <canvas id="movementChart"></canvas>
+
+                </div>
+
+            </article>
+
+
+            <!-- PRODUCT DISTRIBUTION -->
+
+            <article class="panel">
+
+                <div class="panel-heading">
+
+                    <div>
+
+                        <p class="eyebrow">
+                            COLLECTIONS
+                        </p>
+
+                        <h3>Product Distribution</h3>
+
+                        <p>
+                            Products by category.
+                        </p>
+
+                    </div>
+
+                    <div class="panel-icon">
+
+                        <i data-lucide="chart-pie"></i>
+
+                    </div>
+
+                </div>
+
+                <div class="chart-container">
+
+                    <canvas id="categoryChart"></canvas>
+
+                </div>
+
+            </article>
+
+        </div>
+
+
+        <!-- ==========================================
+             BEAUTY COLLECTIONS
+        =========================================== -->
+
+        <div class="section-heading">
+
+            <div>
+
+                <p class="eyebrow">
+                    CURATED COLLECTIONS
+                </p>
+
+                <h2>Beauty Essentials</h2>
+
+            </div>
+
+        </div>
+
+        <div class="collection-grid">
+
+
+            <!-- LIPSTICK COLLECTION -->
+
+            <article class="collection-card lipstick-banner">
+
+                <div>
+
+                    <span>01 / BEAUTY</span>
+
+                    <h3>Lip Essentials</h3>
+
+                    <p>
+                        Discover your signature shade.
+                    </p>
+
+                    <button class="btn"
+                            data-collection="lip">
+
+                        View Collection
+
+                        <i data-lucide="arrow-up-right"></i>
+
+                    </button>
+
+                </div>
+
+            </article>
+
+
+            <!-- MAKEUP COLLECTION -->
+
+            <article class="collection-card makeup-banner">
+
+                <div>
+
+                    <span>02 / BEAUTY</span>
+
+                    <h3>Makeup Collection</h3>
+
+                    <p>
+                        Beauty for every occasion.
+                    </p>
+
+                    <button class="btn"
+                            data-collection="makeup">
+
+                        View Collection
+
+                        <i data-lucide="arrow-up-right"></i>
+
+                    </button>
+
+                </div>
+
+            </article>
+
+
+            <!-- SKINCARE COLLECTION -->
+
+            <article class="collection-card skincare-banner">
+
+                <div>
+
+                    <span>03 / BEAUTY</span>
+
+                    <h3>Skin Essentials</h3>
+
+                    <p>
+                        Care for your natural radiance.
+                    </p>
+
+                    <button class="btn"
+                            data-collection="skin">
+
+                        View Collection
+
+                        <i data-lucide="arrow-up-right"></i>
+
+                    </button>
+
+                </div>
+
+            </article>
+
+        </div>
+
+
+        <!-- ==========================================
+             LOW STOCK PRODUCTS
+        =========================================== -->
+
+        <article class="panel low-stock-panel">
+
+            <div class="panel-heading">
+
+                <div>
+
+                    <p class="eyebrow">
+                        INVENTORY HEALTH
+                    </p>
+
+                    <h3>Low Stock Products</h3>
+
+                    <p>
+                        Products requiring replenishment.
+                    </p>
+
+                </div>
+
+                <div class="panel-icon">
+
+                    <i data-lucide="triangle-alert"></i>
+
+                </div>
+
+            </div>
+
+            <div id="lowStockTable"></div>
+
+        </article>
+
+    </section>
+
+
+    <!-- ==========================================
+         RECORD MANAGEMENT
+    =========================================== -->
+
+    <section class="page" id="recordsPage">
+
+        <!-- MODULE HEADER -->
+
+        <div class="module-banner">
+
+            <div class="module-banner-content">
+
+                <p class="eyebrow">
+                    ROSÉ VANITY
+                </p>
+
+                <h1 id="recordTitle">Products</h1>
+
+                <p id="recordDescription"></p>
+
+            </div>
+
+            <i class="module-decoration"
+               data-lucide="shopping-bag"></i>
+
+        </div>
+
+
+        <!-- RECORDS PANEL -->
+
+        <article class="panel records-panel">
+
+            <div class="records-toolbar">
+
+
+                <!-- SEARCH -->
+
+                <div class="search-box">
+
+                    <i data-lucide="search"></i>
+
+                    <input type="search"
+                           id="searchInput"
+                           placeholder="Search records..."
+                           aria-label="Search records">
+
+                </div>
+
+
+                <!-- FILTER -->
+
+                <select id="filterSelect"
+                        aria-label="Filter records">
+
+                    <option value="">
+                        All records
+                    </option>
+
+                </select>
+
+
+                <!-- VIEW OPTIONS -->
+
+                <div class="view-switch" id="viewSwitch">
+
+                    <button class="icon-btn active"
+                            id="tableViewBtn"
+                            title="Table view"
+                            aria-label="Table view">
+
+                        <i data-lucide="list"></i>
+
+                    </button>
+
+                    <button class="icon-btn"
+                            id="cardViewBtn"
+                            title="Card view"
+                            aria-label="Card view">
+
+                        <i data-lucide="layout-grid"></i>
+
+                    </button>
+
+                </div>
+
+
+                <!-- ADD RECORD -->
+
+                <button class="btn" id="addBtn">
+
+                    <i data-lucide="plus"></i>
+
+                    Add Record
+
+                </button>
+
+            </div>
+
+
+            <!-- RECORD COUNT -->
+
+            <div class="record-information">
+
+                <span id="recordCount">
+                    Loading records...
+                </span>
+
+            </div>
+
+
+            <!-- RECORDS CONTAINER -->
+
+            <div id="recordsContainer"></div>
+
+
+            <!-- PAGINATION -->
+
+            <div class="pagination">
+
+                <button class="btn" id="prevBtn">
+
+                    <i data-lucide="chevron-left"></i>
+
+                    Previous
+
+                </button>
+
+                <span id="pageInfo">
+                    Page 1 of 1
+                </span>
+
+                <button class="btn" id="nextBtn">
+
+                    Next
+
+                    <i data-lucide="chevron-right"></i>
+
+                </button>
+
+            </div>
+
+        </article>
+
+    </section>
+
+
+    <!-- ==========================================
+         INVENTORY REPORTS
+    =========================================== -->
+
+    <section class="page" id="reportsPage">
+
+        <div class="module-banner">
+
+            <div class="module-banner-content">
+
+                <p class="eyebrow">
+                    BUSINESS INTELLIGENCE
+                </p>
+
+                <h1>Inventory Reports</h1>
+
+                <p>
+                    Review inventory performance and stock availability.
+                </p>
+
+            </div>
+
+            <i class="module-decoration"
+               data-lucide="chart-no-axes-combined"></i>
+
+        </div>
+
+
+        <!-- REPORT STATISTICS -->
+
+        <div class="stats-grid" id="reportStats"></div>
+
+
+        <!-- INVENTORY SUMMARY -->
+
+        <article class="panel">
+
+            <div class="panel-heading">
+
+                <div>
+
+                    <h3>Inventory Summary</h3>
+
+                    <p>
+                        Current product quantities and inventory values.
+                    </p>
+
+                </div>
+
+                <button class="btn" id="exportBtn">
+
+                    <i data-lucide="download"></i>
+
+                    Export CSV
+
+                </button>
+
+            </div>
+
+            <div id="reportTable"></div>
+
+        </article>
+
+    </section>
+
+
+    <!-- ==========================================
+         MAIN FOOTER
+    =========================================== -->
+
+    <footer class="main-footer">
+
+        <div>
+
+            <span class="footer-brand">
+                Rosé Vanity
+            </span>
+
+            <span>
+                © 2026 StockFlow. All rights reserved.
+            </span>
+
+        </div>
+
+        <span>
+            Cloud Inventory Management
+        </span>
+
+    </footer>
+
+</main>
+
+
+<!-- ==========================================
+     ADD, EDIT AND VIEW RECORD MODAL
+=========================================== -->
+
+<dialog class="modal" id="recordModal">
+
+    <div class="modal-header">
+
+        <div>
+
+            <p class="eyebrow">
+                ROSÉ VANITY
+            </p>
+
+            <h2 id="modalTitle">
+                Add Record
+            </h2>
+
+        </div>
+
+        <button class="icon-btn"
+                id="closeModal"
+                title="Close"
+                aria-label="Close modal">
+
+            <i data-lucide="x"></i>
+
+        </button>
+
+    </div>
+
+
+    <!-- RECORD FORM -->
+
+    <form id="recordForm">
+
+        <div class="modal-body" id="formFields"></div>
+
+        <div class="modal-footer">
+
+            <button type="button"
+                    class="btn"
+                    id="cancelModal">
+
+                <i data-lucide="x"></i>
+
+                Cancel
+
+            </button>
+
+            <button type="submit"
+                    class="btn"
+                    id="saveBtn">
+
+                <i data-lucide="save"></i>
+
+                Save Record
+
+            </button>
+
+        </div>
+
+    </form>
+
+
+    <!-- VIEW RECORD DETAILS -->
+
+    <div class="modal-body"
+         id="detailContent"
+         hidden>
+    </div>
+
+</dialog>
+
+
+<!-- ==========================================
+     DELETE CONFIRMATION MODAL
+=========================================== -->
+
+<dialog class="modal confirm-modal" id="confirmModal">
+
+    <div class="confirm-content">
+
+        <div class="confirm-icon">
+
+            <i data-lucide="trash-2"></i>
+
+        </div>
+
+        <h2>Delete Record?</h2>
+
+        <p id="confirmText">
+            This action cannot be undone.
+        </p>
+
+        <div class="modal-footer">
+
+            <button class="btn" id="cancelDelete">
+
+                <i data-lucide="x"></i>
+
+                Cancel
+
+            </button>
+
+            <button class="btn" id="confirmDelete">
+
+                <i data-lucide="trash-2"></i>
+
+                Delete Record
+
+            </button>
+
+        </div>
+
+    </div>
+
+</dialog>
+
+
+<!-- ==========================================
+     TOAST NOTIFICATIONS
+=========================================== -->
+
+<div class="toast"
+     id="toast"
+     role="status"
+     aria-live="polite">
+
+    <div class="toast-icon" id="toastIcon">
+
+        <i data-lucide="check-circle"></i>
+
+    </div>
+
+    <div>
+
+        <strong id="toastTitle">
+            Success
+        </strong>
+
+        <p id="toastMessage"></p>
+
+    </div>
+
+    <button id="closeToast"
+            aria-label="Close notification">
+
+        <i data-lucide="x"></i>
+
+    </button>
+
+</div>
+
+</body>
+</html>
